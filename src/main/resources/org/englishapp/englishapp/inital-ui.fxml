@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.englishapp.englishapp.Controller.GeneralAppController">
+    <children>
+        <BorderPane prefHeight="750.0" prefWidth="1300.0">
+            <top>
+                <HBox prefHeight="300" prefWidth="1300.0">
+                    <children>
+                        <ImageView fitHeight="60.0" fitWidth="340.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@icons/decoration/title.png" />
+                            </image>
+                            <HBox.margin>
+                                <Insets left="8.0" top="5.0" />
+                            </HBox.margin>
+                        </ImageView>
+                    </children>
+                </HBox>
+            </top>
+            <center>
+                <VBox prefHeight="600.0" prefWidth="1300.0" style="-fx-background-color: #1c223d;" BorderPane.alignment="CENTER">
+                    <children>
+                        <Button fx:id="searchTab" alignment="CENTER" graphicTextGap="42.0" mnemonicParsing="false" onAction="#loadSearcher" prefHeight="40.0" prefWidth="195.0" styleClass="tab-button" stylesheets="@icons/css/tab-buttons.css" text="Search" textFill="white" >
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                            <graphic>
+                                <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@icons/tabs/search.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                            <padding>
+                                <Insets left="10.0" />
+                            </padding>
+                            <VBox.margin>
+                                <Insets left="10.0" right="10.0" top="12.0" />
+                            </VBox.margin>
+                        </Button>
+                    </children>
+                </VBox>
+            </center>
+        </BorderPane>
+    </children>
+</AnchorPane>

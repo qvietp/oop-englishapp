@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+
+<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="595.0" prefWidth="1092.0"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.englishapp.englishapp.Controller.GoogleTranslateController">
+    <top>
+        <StackPane prefHeight="91.0" prefWidth="1092.0" BorderPane.alignment="CENTER">
+            <children>
+                <HBox prefHeight="100.0" prefWidth="200.0">
+                    <children>
+                        <ChoiceBox fx:id="firstLanguageChoiceBox" prefWidth="150.0" translateX="160.0" translateY="40.0"
+                                   styleClass="language-dropdown" stylesheets="@icons/css/language-dropdown.css"
+                                   onAction="#handleDuplicateChoice1"/>
+                        <StackPane prefHeight="120.0" prefWidth="78.0" scaleX="0.9" scaleY="0.9" translateX="345.0"
+                                   onMouseClicked="#handleTranslate" styleClass="utility-button"
+                                   stylesheets="@icons/css/utility-button.css">
+                            <children>
+                                <ImageView fitHeight="108.0" fitWidth="115.0" pickOnBounds="true" preserveRatio="true"
+                                           scaleX="0.9" scaleY="0.9">
+                                    <image>
+                                        <Image url="@icons/decoration/double_arrow_right.png"/>
+                                    </image>
+                                </ImageView>
+                            </children>
+                        </StackPane>
+                        <ChoiceBox fx:id="secondLanguageChoiceBox" prefWidth="150.0" translateX="530.0"
+                                   translateY="40.0" styleClass="language-dropdown"
+                                   stylesheets="@icons/css/language-dropdown.css"
+                                   onAction="#handleDuplicateChoice2"/>
+                    </children>
+                </HBox>
+            </children>
+        </StackPane>
+    </top>
+    <left>
+        <TextArea fx:id="rightTextArea" prefHeight="450.0" prefWidth="450.0" translateX="20.0" translateY="-10.0"
+                  BorderPane.alignment="CENTER"/>
+    </left>
+    <right>
+        <TextArea fx:id="leftTextArea" prefHeight="450.0" prefWidth="450.0" translateX="-20.0" translateY="-10.0"
+                  BorderPane.alignment="CENTER"/>
+    </right>
+</BorderPane>

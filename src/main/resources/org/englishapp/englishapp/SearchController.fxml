@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.web.WebView?>
+
+<?import javafx.scene.web.HTMLEditor?>
+<BorderPane prefHeight="595.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.englishapp.englishapp.Controller.SearchController">
+   <center>
+      <WebView fx:id="displaySearchResult" prefHeight="545.0" prefWidth="1017.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
