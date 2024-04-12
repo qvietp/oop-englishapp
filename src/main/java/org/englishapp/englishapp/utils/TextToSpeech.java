@@ -13,7 +13,6 @@ public class TextToSpeech {
         if (word.isEmpty()) {
             return;
         }
-
         if (executorService == null) {
             executorService = Executors.newFixedThreadPool(3);
         }

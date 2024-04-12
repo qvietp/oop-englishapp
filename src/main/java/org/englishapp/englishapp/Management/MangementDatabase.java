@@ -19,7 +19,8 @@ public class MangementDatabase {
         try {
             this.sqlConnection = DriverManager.getConnection(PATH_DATABASE);
         } catch (SQLException exception) {
-            throw new RuntimeException(exception);
+            //throw new SQLException(exception);
+            System.out.print(exception.getMessage());
         }
     }
 
@@ -49,6 +50,19 @@ public class MangementDatabase {
         return new Word(wordType, htmlText);
     }
 
+    public void deleteWord(String wordType){
+        String sqlQuery = "Delete FROM av WHERE word = ? COLLATE NOCASE";
+        String htmlText = null;
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = sqlConnection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, wordType);
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void findMatchestWord(String wordType){
         this.searchResultList.clear();
         String sqlQuery = "SELECT word, html FROM av WHERE word LIKE ? ORDER BY word ASC LIMIT 5000";
@@ -66,5 +80,4 @@ public class MangementDatabase {
         }
     }
 
-    //public Word find
 }

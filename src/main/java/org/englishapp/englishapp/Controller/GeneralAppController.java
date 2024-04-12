@@ -1,6 +1,12 @@
 package org.englishapp.englishapp.Controller;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.*;
+import javafx.stage.StageStyle;
 import javazoom.jl.decoder.JavaLayerException;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -10,11 +16,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import org.controlsfx.tools.Borders;
+import org.englishapp.englishapp.Management.ManagementHistoryDatabase;
 import org.englishapp.englishapp.utils.TextToSpeech;
-import javafx.scene.layout.StackPane;
 import javafx.scene.transform.Translate;
 import javafx.scene.web.WebView;
 import javafx.util.Duration;
@@ -24,6 +28,7 @@ import javafx.scene.control.TextField;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -31,8 +36,12 @@ import org.englishapp.englishapp.CustomObject.Word;
 import org.englishapp.englishapp.Management.MangementDatabase;
 import org.englishapp.englishapp.utils.GoogleVoiceAPI;
 
-public class GeneralAppController implements Initializable {
+import javax.security.auth.login.AccountNotFoundException;
 
+public class GeneralAppController implements Initializable, InterfaceController {
+
+    @FXML
+    private AnchorPane InitialPane;
     @FXML
     private Label welcomeText;
 
@@ -60,7 +69,6 @@ public class GeneralAppController implements Initializable {
     @FXML
     private BorderPane mainBorderPane;
 
-
     @FXML
     private ImageView HideMenuImage;
 
@@ -68,7 +76,7 @@ public class GeneralAppController implements Initializable {
     private BorderPane SearchPane;
 
     @FXML
-    private TextField searchBar;
+    public TextField searchBar;
 
     @FXML
     private ListView showMatchestWord;
@@ -79,17 +87,61 @@ public class GeneralAppController implements Initializable {
 
     @FXML
     private WebView displaySearchResult;
-
     @FXML
     private ImageView UkAudio;
-    private MangementDatabase handleManagement;
+
+    @FXML
+    private ListView historyList;
+
+    @FXML
+    private VBox fatherLeftPaneTab;
+    public MangementDatabase handleManagement;
+
+    private ManagementHistoryDatabase managementHistoryDatabase;
+
+    private int isHistoryRequest = 0;
+    private SearchController searchController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Set the firstState: Init and Searchs
+        //StateMachine.setInitAndSeacrch();
+
+        // Load SearcherController
+        /* BorderPane newBorderPane;
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("SearchController.fxml"));
+        try {
+            newBorderPane = loader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException();
+        }
+        this.searchController = loader.getController();
+        this.searchController.setGeneralAppController(this);
+        this.ChangeMainBorderPane(newBorderPane); */
+        this.loadSeacherController();
+        this.isHistoryRequest = 0;
+        // Create ultility class
+        this.managementHistoryDatabase = new ManagementHistoryDatabase();
         this.handleManagement = new MangementDatabase();
         this.LeftPaneTransition = new TranslateTransition(Duration.millis(300), LeftPaneTab);
         this.LeftPaneTransition.setFromX(0);
         this.LeftPaneTransition.setToX(-200);
+    }
+
+    public void loadSeacherController() {
+        StateMachine.setInitAndSeacrch();
+        this.ClearStatusButton();
+        this.searchTab.getStyleClass().add("active");
+        BorderPane newBorderPane;
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("SearchController.fxml"));
+        try {
+            newBorderPane = loader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException();
+        }
+        this.searchController = loader.getController();
+        this.searchController.setGeneralAppController(this);
+        this.ChangeMainBorderPane(newBorderPane);
     }
 
     public void ClearStatusButton() {
@@ -110,11 +162,33 @@ public class GeneralAppController implements Initializable {
     }
 
     public void HideMenu() {
+        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                historyList.setVisible(true);
+                LeftPaneTab.setVisible(false);
+                fatherLeftPaneTab.setVisible(false);
+            }
+        };
+        EventHandler<ActionEvent> event2 = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+            }
+        };
+        if (this.isHistoryRequest == 1) {
+            this.isHistoryRequest = 0;
+            this.LeftPaneTransition.setOnFinished(event1);
+        } else {
+            this.LeftPaneTransition.setOnFinished(event2);
+        }
         if (LeftPaneTab.getTranslateX() == 0) {
             LeftPaneTransition.playFromStart();
             Image image = new Image("file:D:\\OOP_LearningEnglighApp\\EnglishApp\\src\\main\\resources\\org\\englishapp\\englishapp\\icons\\tabs\\enter.png");
             HideMenuImage.setImage(image);
         } else {
+            LeftPaneTab.setVisible(true);
+            fatherLeftPaneTab.setVisible(true);
+            historyList.setVisible(false);
             LeftPaneTransition.setRate(-1);
             LeftPaneTransition.play();
             HideMenuImage.setImage(new Image("file:src/main/resources/org/englishapp/englishapp/icons/tabs/exit.png"));
@@ -122,50 +196,57 @@ public class GeneralAppController implements Initializable {
     }
 
     public void disableListView() {
-        this.showMatchestWord.setVisible(false);
+        this.searchController.disableListView();
     }
 
-    public void checkIfEnterTyped(KeyEvent event){
-        if(event.getCode() == KeyCode.ENTER){
-            try{
-                this.loadSearcher();
-            }
-            catch (IOException exception){
+    public void checkIfEnterTyped(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            try {
+                this.startSearch();
+            } catch (IOException exception) {
                 System.out.print("Error with check Enter typed func\n");
             }
         }
     }
 
     public void findMatchestWord() {
-        this.showMatchestWord.getItems().clear();
-        this.showMatchestWord.setVisible(true);
+        this.searchController.showMatchestWord.getItems().clear();
+        this.searchController.showMatchestWord.setVisible(true);
         String wordType = null;
-        wordType = this.searchBar.getText();
+        wordType = searchBar.getText();
         this.handleManagement.findMatchestWord(wordType);
         String[] result = new String[5000];
         for (int i = 0; i < this.handleManagement.getSearchResultList().size(); i++) {
             result[i] = this.handleManagement.getSearchResultList().get(i).getWordType();
         }
-        this.showMatchestWord.getItems().addAll(result);
+        this.searchController.showMatchestWord.getItems().addAll(result);
     }
 
     public void handleChosenFromMenu() {
-        String wordType = (String) this.showMatchestWord.getSelectionModel().getSelectedItem();
+        String wordType = (String) this.searchController.showMatchestWord.getSelectionModel().getSelectedItem();
         Word resultWord = this.handleManagement.findWord(wordType);
         if (resultWord == null) {
-            displaySearchResult.getEngine().loadContent("Could not find that word!", "text/html");
+            this.searchController.setDisplaySearchResult("Could not find that word!", "text/html");
         } else {
-            displaySearchResult.getEngine().loadContent(resultWord.getHtmlType(), "text/html");
+            this.searchController.setDisplaySearchResult(resultWord.getHtmlType(), "text/html");
         }
     }
 
-    public void loadSearcher() throws IOException {
+    public void startSearch() throws IOException {
         String wordType = searchBar.getText();
+        //System.out.print(wordType);
+        if (StateMachine.state != StateMachine.InitAndSeacrch) {
+            this.loadSeacherController();
+        }
         Word resultWord = this.handleManagement.findWord(wordType);
         if (resultWord == null) {
-            displaySearchResult.getEngine().loadContent("Could not find that word!", "text/html");
+            //this.searchController.displaySearchResult.getEngine().loadContent("Could not find that word!", "text/html");
+            this.searchController.setDisplaySearchResult("Could not find that word!", "text/html");
         } else {
-            displaySearchResult.getEngine().loadContent(resultWord.getHtmlType(), "text/html");
+            this.managementHistoryDatabase.addWord(resultWord.getWordType());
+            //System.out.print(resultWord.getWordType());
+            //this.searchController.displaySearchResult.getEngine().loadContent(resultWord.getHtmlType(), "text/html");
+            this.searchController.setDisplaySearchResult(resultWord.getHtmlType(), "text/html");
         }
     }
 
@@ -174,7 +255,7 @@ public class GeneralAppController implements Initializable {
     }
 
     public void handleClickOnUsAudio() {
-        String wordType = this.searchBar.getText();
+        String wordType = searchBar.getText();
         try {
             GoogleVoiceAPI.getInstance().playAudio(GoogleVoiceAPI.getInstance().getAudio(wordType,
                     "en-US"));
@@ -193,13 +274,13 @@ public class GeneralAppController implements Initializable {
     }
 
     public void loadGoogleTranslate() {
+        StateMachine.setGoogleTranslate();
         this.ClearStatusButton();
         this.googleTranslateTab.getStyleClass().add("active");
         BorderPane newBorderPane;
         try {
             newBorderPane = FXMLLoader.load(HelloApplication.class.getResource("googletranslate.fxml"));
-        }
-        catch (IOException exception){
+        } catch (IOException exception) {
             throw new RuntimeException();
         }
         this.ChangeMainBorderPane(newBorderPane);
@@ -209,8 +290,30 @@ public class GeneralAppController implements Initializable {
 
     }
 
-    public void loadHistory() {
+    public void chooseFromHistoryList() {
+        String wordType = (String) this.historyList.getSelectionModel().getSelectedItem();
+        Word resultWord = this.handleManagement.findWord(wordType);
+        if(StateMachine.state != StateMachine.InitAndSeacrch){
+            this.loadSeacherController();
+        }
+        if (resultWord == null) {
+            this.searchController.setDisplaySearchResult("Could not find that word!", "text/html");
+        } else {
+            this.managementHistoryDatabase.addWord(resultWord.getWordType());
+            this.searchController.setDisplaySearchResult(resultWord.getHtmlType(), "text/html");
+        }
+    }
 
+    public void loadHistory() {
+        this.isHistoryRequest = 1;
+        this.HideMenu();
+        this.historyList.getItems().clear();
+        String[] result = new String[100];
+        List<Word> temptResult = this.managementHistoryDatabase.showHistory();
+        for (int i = 0; i < temptResult.size(); i++) {
+            result[i] = temptResult.get((temptResult.size()) - 1 - i).getWordType();
+        }
+        this.historyList.getItems().addAll(result);
     }
 
     public void loadAddToDict() {

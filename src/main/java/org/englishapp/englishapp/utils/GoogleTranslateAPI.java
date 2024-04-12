@@ -1,5 +1,8 @@
 package org.englishapp.englishapp.utils;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,6 +15,10 @@ import java.util.Base64;
 import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javafx.geometry.Pos;
+import javafx.util.Duration;
+import org.controlsfx.control.Notifications;
 
 public class GoogleTranslateAPI {
     private static final SecureRandom secureRandom = new SecureRandom();
@@ -29,6 +36,8 @@ public class GoogleTranslateAPI {
     public static final String ENGHLISH = "en";
     public static final String VIETNAMESE = "vi";
     public static final String AUTO = "auto";
+
+    private static String speechAfterTranslated = "";
     private static ExecutorService executorService;
 
     private static String generateNewToken() {
@@ -38,6 +47,7 @@ public class GoogleTranslateAPI {
     }
 
     public static String generateURL(String sourceLanguage, String destLanguage, String textSource) {
+        //System.out.printf("Value of text source: %s\n",textSource);
         textSource = textSource.replace("\n", " ");
         return GOOGLE_TRANS_URL +
                 "client=gtrans" +
@@ -52,34 +62,50 @@ public class GoogleTranslateAPI {
         if (executorService == null) {
             executorService = Executors.newFixedThreadPool(1);
         }
+        String status = "";
         String urlGoogleTranslate = GoogleTranslateAPI.generateURL(sourceLanguage, destLanguage, textSource);
-        System.out.println(urlGoogleTranslate);
-        String result = "teset";
+        //System.out.println(urlGoogleTranslate);
         Future<String> future = executorService.submit(new Callable<String>() {
             @Override
             public String call() throws IOException {
+                speechAfterTranslated = "";
                 URL url = new URL(urlGoogleTranslate);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 con.setRequestMethod("GET");
                 con.setRequestProperty("User-Agent", userAgent);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String result = "";
                 String tempt = "";
                 while ((tempt = bufferedReader.readLine()) != null) {
-                    result += tempt;
+                    speechAfterTranslated += tempt;
                 }
                 bufferedReader.close();
                 return "completed";
             }
         });
         try {
-            future.get(3, TimeUnit.SECONDS);
+            status = future.get(3, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException exception) {
             throw new IOException(exception);
         } catch (TimeoutException exception) {
             throw new TimeoutException();
         }
-        System.out.print("Value of result: " + result);
-        return result;
+        if (status == "completed") {
+            StringBuilder tempt = new StringBuilder(speechAfterTranslated);
+            tempt.delete(0, 2);
+            tempt.delete(speechAfterTranslated.length() - 4, speechAfterTranslated.length() - 2);
+            speechAfterTranslated = tempt.toString();
+            return tempt.toString();
+        }
+        return null;
+    }
+
+    public static void handleNotification() {
+        Notifications notificationBuilder = Notifications.create()
+                .title("Translate failed !. Please check your internet connection")
+                .text("Translate faield !")
+                .graphic(null)
+                .hideAfter(Duration.seconds(3))
+                .position(Pos.BOTTOM_LEFT);
+        notificationBuilder.showWarning();
     }
 }

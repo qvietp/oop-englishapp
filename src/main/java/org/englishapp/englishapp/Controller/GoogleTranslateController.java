@@ -29,9 +29,10 @@ public class GoogleTranslateController implements Initializable {
     private final String[] destLanguage =  {"English", "Vietnamese"};
     @Override
     public void initialize(URL location, ResourceBundle resources){
+
+        StateMachine.setGoogleTranslate();
         this.firstLanguageChoiceBox.getItems().addAll(this.sourceLanguage);
         this.firstLanguageChoiceBox.setValue(sourceLanguage[0]);
-
         this.secondLanguageChoiceBox.getItems().addAll(this.destLanguage);
         this.secondLanguageChoiceBox.setValue(destLanguage[1]);
     }
@@ -77,6 +78,8 @@ public class GoogleTranslateController implements Initializable {
                  result = GoogleTranslateAPI.translate(paragraph, GoogleTranslateAPI.ENGHLISH, GoogleTranslateAPI.VIETNAMESE);
              }
              catch(IOException| TimeoutException exception){
+                 GoogleTranslateAPI.handleNotification();
+                 System.out.print(exception.getMessage());
                  throw new RuntimeException();
              }
          }
@@ -85,6 +88,7 @@ public class GoogleTranslateController implements Initializable {
                  result = GoogleTranslateAPI.translate(paragraph, GoogleTranslateAPI.VIETNAMESE, GoogleTranslateAPI.ENGHLISH);
              }
              catch(IOException| TimeoutException exception){
+                 GoogleTranslateAPI.handleNotification();
                  throw new RuntimeException();
              }
          }
@@ -93,6 +97,7 @@ public class GoogleTranslateController implements Initializable {
                  result = GoogleTranslateAPI.translate(paragraph, GoogleTranslateAPI.AUTO, GoogleTranslateAPI.ENGHLISH);
              }
              catch(IOException| TimeoutException exception){
+                 GoogleTranslateAPI.handleNotification();
                  throw new RuntimeException();
              }
          }
@@ -101,9 +106,12 @@ public class GoogleTranslateController implements Initializable {
                  result = GoogleTranslateAPI.translate(paragraph, GoogleTranslateAPI.AUTO, GoogleTranslateAPI.VIETNAMESE);
              }
              catch(IOException| TimeoutException exception){
+                 GoogleTranslateAPI.handleNotification();
                  throw new RuntimeException();
              }
          }
-         System.out.print(result);
+         if(result != null){
+             this.rightTextArea.setText(result);
+        }
     }
 }

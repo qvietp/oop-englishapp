@@ -6,7 +6,7 @@ module org.englishapp.englishapp {
     requires java.sql;
     requires jlayer;
     requires freetts;
-    //requires org.controlsfx.controls;
+    requires org.controlsfx.controls;
     //requires com.dlsc.formsfx;
     //requires net.synedra.validatorfx;
     //requires org.kordamp.ikonli.javafx;
