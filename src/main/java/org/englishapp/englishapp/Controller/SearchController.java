@@ -54,20 +54,21 @@ public class SearchController implements Initializable, InterfaceController {
 
     private int buttonYesStatus = 0;
     private int buttonNoStatus = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         StateMachine.setInitAndSeacrch();
         FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("InitialApplication.fxml"));
     }
 
-    public void displayAlert(String title,String message){
+    public void displayAlert(String title, String message) {
         buttonNoStatus = 0;
         buttonYesStatus = 0;
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle(title);
         window.setMinWidth(250);
-        Label label =  new Label();
+        Label label = new Label();
         label.setText(message);
         Button buttonYes = new Button("Yes");
         Button buttonNo = new Button("No");
@@ -88,14 +89,15 @@ public class SearchController implements Initializable, InterfaceController {
         });
 
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(label,buttonYes,buttonNo);
+        layout.getChildren().addAll(label, buttonYes, buttonNo);
         layout.setAlignment(Pos.CENTER);
 
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
     }
-    public void setGeneralAppController(GeneralAppController controller){
+
+    public void setGeneralAppController(GeneralAppController controller) {
         this.generalAppController = controller;
     }
 
@@ -105,16 +107,22 @@ public class SearchController implements Initializable, InterfaceController {
 
     public void handleChosenFromMenu() {
         String wordType = (String) this.showMatchestWord.getSelectionModel().getSelectedItem();
-        Word resultWord = this.generalAppController.handleManagement.findWord(wordType);
+        this.generalAppController.searchBar.setText(wordType);
+        /* Word resultWord = this.generalAppController.handleManagement.findWord(wordType);
         if (resultWord == null) {
             displaySearchResult.getEngine().loadContent("Could not find that word!", "text/html");
         } else {
             displaySearchResult.getEngine().loadContent(resultWord.getHtmlType(), "text/html");
+        } */
+        try {
+            this.generalAppController.startSearch();
+        } catch (IOException exception) {
+            System.out.print(exception.getMessage());
         }
     }
 
-    public void setDisplaySearchResult(String html,String typeFile){
-        this.displaySearchResult.getEngine().loadContent(html,typeFile);
+    public void setDisplaySearchResult(String html, String typeFile) {
+        this.displaySearchResult.getEngine().loadContent(html, typeFile);
     }
 
     public void handleClickOnUkAudio() {
@@ -140,18 +148,31 @@ public class SearchController implements Initializable, InterfaceController {
     }
 
     public void handleClickOnSave() {
-
+        System.out.printf("Value of searched word: %s\n", this.generalAppController.searchedWord);
+        if (this.generalAppController.searchedWord == null) {
+            return;
+        }
+        String favoriteWord = this.generalAppController.searchedWord;
+        if (this.generalAppController.managementFavorite.isExist(favoriteWord)) {
+            this.generalAppController.handleNotification("Error", "Word existed");
+        } else {
+            this.displayAlert("Confirm", "Are you sure ?");
+            if(this.buttonYesStatus != 1){
+                return;
+            }
+            this.generalAppController.managementFavorite.addWord(favoriteWord);
+            this.generalAppController.handleSuccessNotification();
+        }
     }
 
     public void handleClickOnDelete() {
         String wordType = this.generalAppController.searchBar.getText();
         Word resultWord = this.generalAppController.handleManagement.findWord(wordType);
-        if(resultWord  == null){
+        if (resultWord == null) {
             handleNotification();
-        }
-        else {
+        } else {
             this.displayAlert("Confirm", "Are you sure ?");
-            if(this.buttonYesStatus == 1){
+            if (this.buttonYesStatus == 1) {
                 this.generalAppController.handleManagement.deleteWord(wordType);
             }
         }

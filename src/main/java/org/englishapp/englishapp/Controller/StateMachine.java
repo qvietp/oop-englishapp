@@ -6,6 +6,8 @@ public class StateMachine {
 
     static String GoogleTranslate = "GoogleTranslate";
 
+    static String AddNewWord = "AddNewWord";
+
     static String state = "";
 
     public static void setInitAndSeacrch() {
@@ -14,5 +16,9 @@ public class StateMachine {
 
     public static void setGoogleTranslate() {
         state = GoogleTranslate;
+    }
+
+    public static void setAddNewWord() {
+        state = AddNewWord;
     }
 }

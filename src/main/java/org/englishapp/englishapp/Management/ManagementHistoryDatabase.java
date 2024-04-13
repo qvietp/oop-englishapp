@@ -91,4 +91,21 @@ public class ManagementHistoryDatabase {
         }
         return this.searchResultList;
     }
+
+    public void findMatchestWord(String wordType) {
+        this.searchResultList.clear();
+        String sqlQuery = "SELECT Word FROM history WHERE Word LIKE ? ORDER BY Word ASC LIMIT 100";
+        PreparedStatement preparedStatement;
+        try {
+            preparedStatement = sqlConnection.prepareStatement(sqlQuery);
+            preparedStatement.setString(1, wordType+"%");
+            System.out.print(preparedStatement.toString());
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                this.searchResultList.add(new Word(resultSet.getString("Word"),null));
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(exception);
+        }
+    }
 }

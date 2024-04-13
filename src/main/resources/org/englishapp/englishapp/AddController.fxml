@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.HTMLEditor?>
+
+<BorderPane prefHeight="595.0" prefWidth="1092.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.englishapp.englishapp.Controller.AddController">
+   <top>
+        <AnchorPane prefHeight="554.0" prefWidth="916.0" BorderPane.alignment="CENTER">
+            <children>
+                <TextArea fx:id="wordField" layoutX="648.0" layoutY="100.0" onKeyTyped="#updateExplainFieldTemplate" prefHeight="49.0" prefWidth="336.0" promptText="Type word to add to dictionary here" styleClass="text-area" stylesheets="@icons/css/text-areas.css" wrapText="true">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </TextArea>
+                <AnchorPane layoutX="56.0" layoutY="160.0" styleClass="explain-pane">
+                    <children>
+                        <HTMLEditor fx:id="explainField" disable="true" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" layoutX="14.0" layoutY="-15.0" prefHeight="417.0" prefWidth="550.0" />
+                    </children>
+                </AnchorPane>
+                <Label fx:id="warningLabel" graphicTextGap="0.0" layoutX="512.0" layoutY="58.0" prefHeight="70.0" prefWidth="230.0" textAlignment="CENTER" wrapText="true">
+                    <font>
+                        <Font name="System Bold Italic" size="16.0" />
+                    </font>
+                    <padding>
+                        <Insets left="10.0" right="10.0" />
+                    </padding>
+                </Label>
+                <Button fx:id="addButton" alignment="BOTTOM_CENTER" disable="false" layoutX="285.0" layoutY="35.0" mnemonicParsing="false" onAction="#onAddButtonClick" prefHeight="79.0" prefWidth="106.0" styleClass="add-button" text="Add to Dictionary" textAlignment="CENTER" wrapText="true">
+                    <font>
+                        <Font name="System Bold Italic" size="16.0" />
+                    </font>
+                </Button>
+                <TextArea fx:id="pronunciationField" disable="false" layoutX="648.0" layoutY="176.0" onKeyTyped="#updateExplainFieldTemplate" prefHeight="34.0" prefWidth="210.0" promptText="Word pronunciation" styleClass="pronunciation-field">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </TextArea>
+                <TextArea fx:id="shortDescArea" disable="false" layoutX="644.0" layoutY="246.0" onKeyTyped="#updateExplainFieldTemplate" prefHeight="230.0" prefWidth="344.0" promptText="Short description for word" styleClass="text-area" stylesheets="@icons/css/text-areas.css" text="vsg" wrapText="true">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </TextArea>
+            </children>
+        </AnchorPane>
+   </top>
+</BorderPane>
