@@ -140,7 +140,7 @@ public class GeneralAppController implements Initializable, InterfaceController 
         this.handleManagement = new MangementDatabase();
         this.LeftPaneTransition = new TranslateTransition(Duration.millis(300), LeftPaneTab);
         this.LeftPaneTransition.setFromX(0);
-        this.LeftPaneTransition.setToX(-200);
+        this.LeftPaneTransition.setToX(-250);
     }
 
     public void loadSeacherController() {
@@ -400,10 +400,50 @@ public class GeneralAppController implements Initializable, InterfaceController 
         this.historyList.getItems().addAll(finalResult);
     }
 
-    public void loadGame() {
-
+    public void loadChooseGame() {
+        StateMachine.setChooseGame();
+        this.ClearStatusButton();
+        this.gameTab.getStyleClass().add("active");
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("ChooseGame.fxml"));
+        BorderPane newBorderPane;
+        try {
+            newBorderPane = loader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException();
+        }
+        ChooseGameController chooseGameController = loader.getController();
+        chooseGameController.setGeneralAppController(this);
+        this.ChangeMainBorderPane(newBorderPane);
     }
 
+    public void loadGuessWordGame(){
+        StateMachine.setGame();
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("GuessWordGame.fxml"));
+        BorderPane newBorderPane;
+        try {
+            newBorderPane = loader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException();
+        }
+        GuessWordGameController guessWordGameController = loader.getController();
+        guessWordGameController.setGeneralAppController(this);
+        this.ChangeMainBorderPane(newBorderPane);
+    }
+
+    public void loadPlayAgain(int score){
+        StateMachine.setPlayAgain();
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("PlayAgain.fxml"));
+        BorderPane newBorderPane;
+        try {
+            newBorderPane = loader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException();
+        }
+        PlayAgainController playAgainController = loader.getController();
+        playAgainController.setScore(score);
+        this.ChangeMainBorderPane(newBorderPane);
+
+    }
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");

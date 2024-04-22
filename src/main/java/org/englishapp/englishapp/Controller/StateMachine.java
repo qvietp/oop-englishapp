@@ -2,12 +2,16 @@ package org.englishapp.englishapp.Controller;
 
 public class StateMachine {
 
-    static String InitAndSeacrch = "InitAndSearch";
+    static final String InitAndSeacrch = "InitAndSearch";
 
-    static String GoogleTranslate = "GoogleTranslate";
+    static final String GoogleTranslate = "GoogleTranslate";
 
-    static String AddNewWord = "AddNewWord";
+    static final String AddNewWord = "AddNewWord";
 
+    static final String Game = "Game";
+    static final String ChooseGame = "ChooseGame";
+
+    static final String PlayAgain = "PlayAgain";
     static String state = "";
 
     public static void setInitAndSeacrch() {
@@ -21,4 +25,17 @@ public class StateMachine {
     public static void setAddNewWord() {
         state = AddNewWord;
     }
+
+    public static void setGame() {
+        state = Game;
+    }
+
+    public static void setChooseGame() {
+        state = ChooseGame;
+    }
+
+    public static void setPlayAgain(){
+         state = PlayAgain;
+    }
+
 }

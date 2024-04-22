@@ -31,7 +31,7 @@
                         </ImageView>
                         <Pane prefHeight="110.0" prefWidth="806.0">
                             <children>
-                                <TextField fx:id="searchBar" layoutX="103.0" layoutY="29.0" onKeyPressed="#checkIfEnterTyped" onKeyTyped="#findMatchestWord" onMousePressed="#disableListView" prefHeight="60.0" prefWidth="567.0" style="-fx-font-family: Arial; -fx-font-size: 20px;">
+                                <TextField fx:id="searchBar" layoutX="123.0" layoutY="29.0" onKeyPressed="#checkIfEnterTyped" onKeyTyped="#findMatchestWord" onMousePressed="#disableListView" prefHeight="60.0" prefWidth="547.0" style="-fx-font-family: Arial; -fx-font-size: 20px;">
                                 </TextField>
                                 <Button fx:id="searchTab" alignment="BASELINE_LEFT" graphicTextGap="42.0" layoutX="674.0" layoutY="20.0" mnemonicParsing="false" onAction="#startSearch" prefHeight="68.0" prefWidth="49.0" styleClass="search-button" stylesheets="@icons/css/tab-buttons.css">
                                     <font>
@@ -54,7 +54,7 @@
                 </HBox>
             </top>
             <right>
-                <BorderPane fx:id="mainBorderPane" prefHeight="595.0" prefWidth="1092.0" BorderPane.alignment="CENTER">
+                <BorderPane fx:id="mainBorderPane" prefHeight="650.0" prefWidth="1076.0" BorderPane.alignment="CENTER">
                     <top>
 
                     </top>
@@ -92,7 +92,7 @@
                                                         </ImageView>
                                                     </children>
                                                 </StackPane>
-                                                <StackPane onMouseClicked="#handleClickOnDelete" prefHeight="150.0" prefWidth="89.0" styleClass="utility-button" stylesheets="@icons/css/utility-button.css">
+                                                <StackPane onMouseClicked="#handleClickOnDelete" prefHeight="150.0" prefWidth="88.0" styleClass="utility-button" stylesheets="@icons/css/utility-button.css">
                                                     <children>
                                                         <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
@@ -103,28 +103,28 @@
                                                 </StackPane>
                                             </children>
                                         </HBox>
-                                        <ListView fx:id="showMatchestWord" onContextMenuRequested="#handleChosenFromMenu" prefHeight="150.0" prefWidth="568.0" style="-fx-font-family: Arial; -fx-font-size: 16px;" translateX="-55.0" visible="false">
+                                        <ListView fx:id="showMatchestWord" onContextMenuRequested="#handleChosenFromMenu" prefHeight="150.0" prefWidth="561.0" style="-fx-font-family: Arial; -fx-font-size: 16px;" translateX="-75.0" visible="false">
                                         </ListView>
                                     </children>
                                 </HBox>
                             </children>
                         </StackPane>
                     </top>
-                    <center>
+               <bottom>
                         <WebView fx:id="displaySearchResult" prefHeight="500.0" prefWidth="1034.0" BorderPane.alignment="CENTER" />
-                    </center>
+               </bottom>
                 </BorderPane>
             </right>
             <left>
-                <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                <StackPane prefHeight="650.0" prefWidth="226.0" BorderPane.alignment="CENTER">
                     <ListView fx:id="historyList" onContextMenuRequested="#chooseFromHistoryList" prefHeight="528.0" prefWidth="200.0" style="-fx-font-family: Arial; -fx-font-size: 16px;" translateY="26.0" visible="false">
                     </ListView>
-               <TextField prefHeight="26.0" fx:id="searchHistory" onKeyTyped="#findMatchestWordFromHistory" prefWidth="213.0" StackPane.alignment="TOP_CENTER">
+               <TextField fx:id="searchHistory" onKeyTyped="#findMatchestWordFromHistory" prefHeight="26.0" prefWidth="213.0" StackPane.alignment="TOP_CENTER">
 
                </TextField>
                <VBox fx:id="fatherLeftPaneTab" prefHeight="600.0" prefWidth="200.0" style="-fx-background-color: #FFFFFF;">
                   <children>
-                     <Pane fx:id="LeftPaneTab" prefHeight="476.0" prefWidth="160.0" style="-fx-background-color: #272f4f; -fx-background-radius: 0 20 20 0" translateX="0" translateY="20.0">
+                     <Pane fx:id="LeftPaneTab" prefHeight="476.0" prefWidth="182.0" style="-fx-background-color: #272f4f; -fx-background-radius: 0 20 20 0" translateX="0" translateY="20.0">
                         <children>
                            <Button fx:id="googleTranslateTab" alignment="BASELINE_LEFT" graphicTextGap="10.0" layoutX="3.0" layoutY="47.0" mnemonicParsing="false" onAction="#loadGoogleTranslate" prefHeight="40.0" prefWidth="187.0" styleClass="tab-button" stylesheets="@icons/css/tab-buttons.css" text="Google Translate" textFill="WHITE">
                               <font>
@@ -192,7 +192,7 @@
                                  <Insets left="10.0" />
                               </padding>
                            </Button>
-                           <Button fx:id="gameTab" alignment="BASELINE_LEFT" graphicTextGap="43.0" layoutX="3.0" layoutY="325.0" mnemonicParsing="false" onAction="#loadGame" prefHeight="40.0" prefWidth="185.0" styleClass="tab-button" stylesheets="@icons/css/tab-buttons.css" text="Game" textFill="WHITE">
+                           <Button fx:id="gameTab" alignment="BASELINE_LEFT" graphicTextGap="43.0" layoutX="3.0" layoutY="325.0" mnemonicParsing="false" onAction="#loadChooseGame" prefHeight="40.0" prefWidth="185.0" styleClass="tab-button" stylesheets="@icons/css/tab-buttons.css" text="Game" textFill="WHITE">
                               <font>
                                  <Font name="System Bold" size="16.0" />
                               </font>
@@ -211,7 +211,7 @@
                      </Pane>
                   </children>
                </VBox>
-               <Button fx:id="ShowMenu" mnemonicParsing="false" onAction="#HideMenu" prefHeight="36.0" prefWidth="61.0" styleClass="tab-button" stylesheets="@icons/css/tab-buttons.css" translateX="-67.0" translateY="110.0">
+               <Button fx:id="ShowMenu" mnemonicParsing="false" onAction="#HideMenu" prefHeight="36.0" prefWidth="61.0" styleClass="tab-button" stylesheets="@icons/css/tab-buttons.css" translateX="-88.0" translateY="110.0">
                   <font>
                      <Font name="System Bold" size="16.0" />
                   </font>

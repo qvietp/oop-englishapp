@@ -1,0 +1,252 @@
+package org.englishapp.englishapp.Controller;
+
+import javafx.css.StyleableStringProperty;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import org.englishapp.englishapp.utils.MyTimerTask;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+
+public class GuessWordGameController implements Initializable {
+
+    @FXML
+    Button buttonA;
+    @FXML
+    Button buttonB;
+    @FXML
+    Button buttonC;
+    @FXML
+    Button buttonD;
+    @FXML
+    ImageView showPicture;
+
+    @FXML
+    Label scoreCountLabel;
+
+    @FXML
+    Label correctQuestionCount;
+    private List<String> wordList;
+    private List<String> imageList;
+
+    private List<String> temptWordList;
+
+    public TextField timeClock;
+
+    private int indexCorrectQuestion = 0;
+
+    private GeneralAppController generalAppController;
+    private int score = 0;
+    public int timeCount;
+    private int numberOfQuestion;
+    private Timer timer;
+    private int correctQuestion = 0;
+    public static final String PATH_GUESS_GAME_TXT = "src//main//resources//org//englishapp//englishapp//Database//GuessWordGameDatabase";
+
+    public static final String PATH_GUESS_GAME_IMAGE = "src//main//resources//org//englishapp//englishapp//icons//GuessWordGameImage//GuessGameImage";
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        generalAppController = null;
+        numberOfQuestion = 0;
+        timeCount = 0;
+        this.timer = null;
+        this.indexCorrectQuestion = 0;
+        this.score = 0;
+        this.correctQuestion = 0;
+        this.wordList = new ArrayList<>();
+        this.imageList = new ArrayList<>();
+        this.temptWordList = new ArrayList<>();
+        try {
+            this.loadWordList();
+        } catch (IOException exception) {
+            System.out.print(exception.getMessage());
+        }
+        for (String word : wordList) {
+            this.temptWordList.add(word);
+        }
+        try {
+            this.loadImageList();
+        } catch (IOException exception) {
+            System.out.print(exception.getMessage());
+        }
+        this.loadNextQuestion();
+    }
+
+    public void setGeneralAppController(GeneralAppController generalAppController){
+        this.generalAppController = generalAppController;
+    }
+    public void setCLock(int time) {
+        this.timeClock.setText(String.format("%d", time));
+    }
+
+    public void handeSystickInterrupt() {
+        if (this.timeCount < 10) {
+            this.setCLock(this.timeCount);
+            this.timeCount++;
+        } else {
+            this.loadNextQuestion();
+        }
+    }
+
+    public static void loadFileToList(String filePath, List<String> list) throws IOException {
+        FileReader fileReader;
+        BufferedReader bufferedReader;
+
+        try {
+            fileReader = new FileReader(filePath);
+            bufferedReader = new BufferedReader(fileReader);
+        } catch (IOException e) {
+            System.err.println(e.toString());
+            throw e;
+        }
+
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            list.add(line);
+        }
+
+        bufferedReader.close();
+        fileReader.close();
+    }
+
+    private void loadNextQuestion() {
+        if(this.numberOfQuestion > 10){
+            this.generalAppController.loadPlayAgain(this.score);
+            if(this.timer!=null){
+                 this.timer.cancel();
+            }
+            return;
+        }
+        this.numberOfQuestion++;
+        this.setCLock(0);
+        this.timeCount = 0;
+        if (this.timer == null) {
+            MyTimerTask myTimerTask = new MyTimerTask(this);
+            this.timer = new Timer("Timer");
+            this.timer.schedule(myTimerTask, 0, 1000);
+        }
+
+        int initialSize = this.wordList.size();
+        int currentSize = this.temptWordList.size();
+        Random random = new Random();
+        int[] arrayABCD = {-1, -1, -1, -1};
+        int tempt = 0;
+        int rightIdex = -1;
+        rightIdex = random.nextInt(4);
+        int randomIdexInDatabase = random.nextInt(currentSize);
+        String rightAnswer = this.temptWordList.get(randomIdexInDatabase);
+        String rightAnswerImagePath = this.imageList.get(randomIdexInDatabase);
+        this.temptWordList.remove(randomIdexInDatabase);
+        this.imageList.remove(randomIdexInDatabase);
+        arrayABCD[rightIdex] = randomIdexInDatabase;
+        int flag = 0;
+        for (int i = 0; i < 4; i++) {
+            if (i != rightIdex) {
+                while (true) {
+                    flag = 0;
+                    tempt = random.nextInt(initialSize);
+                    for (int j = 0; j < 4; j++) {
+                        if (tempt == arrayABCD[j]) {
+                            break;
+                        } else if (tempt != arrayABCD[j] && j == 3) {
+                            flag = 1;
+                        }
+                    }
+                    if (flag == 1) {
+                        arrayABCD[i] = tempt;
+                        break;
+                    }
+                }
+            }
+        }
+        Image image = new Image("file:" + rightAnswerImagePath);
+        this.showPicture.setImage(image);
+        String[] result = new String[4];
+        for (int i = 0; i < 4; i++) {
+            if (i == rightIdex) {
+                result[i] = rightAnswer;
+            } else {
+                result[i] = this.wordList.get(arrayABCD[i]);
+            }
+        }
+        this.buttonA.setText(result[0]);
+        this.buttonB.setText(result[1]);
+        this.buttonC.setText(result[2]);
+        this.buttonD.setText(result[3]);
+        this.indexCorrectQuestion = rightIdex;
+    }
+
+    public void chooseA() {
+        if (this.indexCorrectQuestion == 0) {
+            this.handleCorrectAnswer();
+        } else {
+            this.handleInCorrectAnswer();
+        }
+        this.loadNextQuestion();
+    }
+
+    public void chooseB() {
+        if (this.indexCorrectQuestion == 1) {
+            this.handleCorrectAnswer();
+        } else {
+            this.handleInCorrectAnswer();
+        }
+        this.loadNextQuestion();
+    }
+
+    public void chooseC() {
+        if (this.indexCorrectQuestion == 2) {
+            this.handleCorrectAnswer();
+        } else {
+            this.handleInCorrectAnswer();
+        }
+        this.loadNextQuestion();
+    }
+
+    public void chooseD() {
+        if (this.indexCorrectQuestion == 3) {
+            this.handleCorrectAnswer();
+        } else {
+            this.handleInCorrectAnswer();
+        }
+        this.loadNextQuestion();
+    }
+
+    public void handleCorrectAnswer() {
+        this.correctQuestion+=1;
+        this.score+=10;
+        this.scoreCountLabel.setText(String.format("%d", score));
+        this.correctQuestionCount.setText(String.format("%d", correctQuestion));
+    }
+
+    public void handleInCorrectAnswer() {
+
+    }
+
+    private void loadWordList() throws IOException {
+        loadFileToList(PATH_GUESS_GAME_TXT, wordList);
+    }
+
+    private void loadImageList() throws IOException {
+        for (String word : wordList) {
+            String imagePath = PATH_GUESS_GAME_IMAGE + "/" + word + ".jpg";
+            imageList.add(imagePath);
+        }
+    }
+
+    public void onExitGameButtonClick() {
+        if(this.timer!=null){
+            this.timer.cancel();
+        }
+        this.generalAppController.loadChooseGame();
+    }
+}
