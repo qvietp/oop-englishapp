@@ -6,6 +6,22 @@
     background-color: #657ee4;
     border-radius: 10px;
 }
+.correct-button {
+    -fx-background-color: #00ff00;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.4, 0, 1);
+    background-color: #00ff00;
+    border-radius: 10px;
+}
+.incorrect-button{
+    -fx-background-color: #ff0000;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.4, 0, 1);
+    background-color: #ff0000;
+    border-radius: 10px;
+}
 .search-button {
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;

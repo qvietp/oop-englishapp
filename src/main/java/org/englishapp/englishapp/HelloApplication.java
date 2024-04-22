@@ -23,13 +23,13 @@ public class HelloApplication extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                TextToSpeech.shutDown();
-                GoogleVoiceAPI.shutdownExecutorService();
-            }
-        });
-    }
+        @Override
+        public void handle(WindowEvent windowEvent) {
+            TextToSpeech.shutDown();
+            GoogleVoiceAPI.shutdownExecutorService();
+        }
+    });
+}
 
     public static void main(String[] args) {
         launch();

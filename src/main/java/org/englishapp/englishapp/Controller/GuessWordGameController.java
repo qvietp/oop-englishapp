@@ -1,5 +1,9 @@
 package org.englishapp.englishapp.Controller;
 
+import com.sun.speech.engine.synthesis.SynthesizerSelector;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.css.StyleableStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -15,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.englishapp.englishapp.utils.MyTimerTask;
 
 import java.io.BufferedReader;
@@ -22,6 +27,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GuessWordGameController implements Initializable {
 
@@ -91,9 +97,10 @@ public class GuessWordGameController implements Initializable {
         this.loadNextQuestion();
     }
 
-    public void setGeneralAppController(GeneralAppController generalAppController){
+    public void setGeneralAppController(GeneralAppController generalAppController) {
         this.generalAppController = generalAppController;
     }
+
     public void setCLock(int time) {
         this.timeClock.setText(String.format("%d", time));
     }
@@ -128,7 +135,7 @@ public class GuessWordGameController implements Initializable {
         fileReader.close();
     }
 
-    public void createTimer(){
+    public void createTimer() {
         if (this.timer == null) {
             MyTimerTask myTimerTask = new MyTimerTask(this);
             this.timer = new Timer("Timer");
@@ -136,16 +143,17 @@ public class GuessWordGameController implements Initializable {
         }
     }
 
-    public void continueTimer(){
+    public void continueTimer() {
         this.timer = new Timer();
         MyTimerTask myTimerTask = new MyTimerTask(this);
-        this.timer.schedule(myTimerTask,0,1000);
+        this.timer.schedule(myTimerTask, 0, 1000);
     }
+
     private void loadNextQuestion() {
-        if(this.numberOfQuestion > 10){
+        if (this.numberOfQuestion > 10) {
             this.generalAppController.loadPlayAgain(this.score);
-            if(this.timer!=null){
-                 this.timer.cancel();
+            if (this.timer != null) {
+                this.timer.cancel();
             }
             return;
         }
@@ -206,43 +214,95 @@ public class GuessWordGameController implements Initializable {
 
     public void chooseA() {
         if (this.indexCorrectQuestion == 0) {
-            this.handleCorrectAnswer();
+            Platform.runLater(() -> {
+                this.handleCorrectAnswer();
+                this.buttonA.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonA.getStyleClass().add("correct-button");
+            });
         } else {
-            this.handleInCorrectAnswer();
+            Platform.runLater(() -> {
+                this.buttonA.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonA.getStyleClass().add("incorrect-button");
+            });
         }
-        this.loadNextQuestion();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
+        pauseTransition.setOnFinished(even->{
+            this.buttonA.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+            this.buttonA.getStyleClass().add("tab-button");
+            this.loadNextQuestion();
+        });
+        pauseTransition.play();
     }
 
     public void chooseB() {
         if (this.indexCorrectQuestion == 1) {
-            this.handleCorrectAnswer();
+            Platform.runLater(() -> {
+                this.handleCorrectAnswer();
+                this.buttonB.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonB.getStyleClass().add("correct-button");
+            });
         } else {
-            this.handleInCorrectAnswer();
+            Platform.runLater(() -> {
+                this.buttonB.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonB.getStyleClass().add("incorrect-button");
+            });
         }
-        this.loadNextQuestion();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
+        pauseTransition.setOnFinished(even->{
+            this.buttonB.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+            this.buttonB.getStyleClass().add("tab-button");
+            this.loadNextQuestion();
+        });
+        pauseTransition.play();
     }
 
     public void chooseC() {
         if (this.indexCorrectQuestion == 2) {
-            this.handleCorrectAnswer();
+            Platform.runLater(() -> {
+                this.handleCorrectAnswer();
+                this.buttonC.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonC.getStyleClass().add("correct-button");
+            });
         } else {
-            this.handleInCorrectAnswer();
+            Platform.runLater(() -> {
+                this.buttonC.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonC.getStyleClass().add("incorrect-button");
+            });
         }
-        this.loadNextQuestion();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
+        pauseTransition.setOnFinished(even->{
+            this.buttonC.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+            this.buttonC.getStyleClass().add("tab-button");
+            this.loadNextQuestion();
+        });
+        pauseTransition.play();
     }
 
     public void chooseD() {
         if (this.indexCorrectQuestion == 3) {
-            this.handleCorrectAnswer();
+            Platform.runLater(() -> {
+                this.handleCorrectAnswer();
+                this.buttonD.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonD.getStyleClass().add("correct-button");
+            });
         } else {
-            this.handleInCorrectAnswer();
+            Platform.runLater(() -> {
+                this.buttonD.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+                this.buttonD.getStyleClass().add("incorrect-button");
+            });
         }
-        this.loadNextQuestion();
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
+        pauseTransition.setOnFinished(even->{
+            this.buttonD.getStyleClass().removeAll("tab-button", "incorrect-button", "correct-button");
+            this.buttonD.getStyleClass().add("tab-button");
+            this.loadNextQuestion();
+        });
+        pauseTransition.play();
     }
 
     public void handleCorrectAnswer() {
-        this.correctQuestion+=1;
-        this.score+=10;
+        this.correctQuestion += 1;
+        this.score += 10;
         this.scoreCountLabel.setText(String.format("%d", score));
         this.correctQuestionCount.setText(String.format("%d", correctQuestion));
     }
@@ -263,30 +323,28 @@ public class GuessWordGameController implements Initializable {
     }
 
     public int onExitGame() {
-        if(this.timer!=null){
+        if (this.timer != null) {
             this.timer.cancel();
         }
         this.displayAlert("Confirm", "Are you want to quit ?");
-        if(this.buttonYesStatus==1){
+        if (this.buttonYesStatus == 1) {
             this.generalAppController.loadChooseGameWithoutCofirm();
             return 1;
-        }
-        else {
+        } else {
             this.continueTimer();
             return 0;
         }
     }
 
-    public int onExitGameButtonClick(){
-        if(this.timer!=null){
+    public int onExitGameButtonClick() {
+        if (this.timer != null) {
             this.timer.cancel();
         }
         this.displayAlert("Confirm", "Are you want to quit ?");
-        if(this.buttonYesStatus==1){
+        if (this.buttonYesStatus == 1) {
             this.generalAppController.loadChooseGameWithoutCofirm();
             return 1;
-        }
-        else {
+        } else {
             this.continueTimer();
             return 0;
         }
