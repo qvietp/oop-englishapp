@@ -149,7 +149,7 @@ public class GeneralAppController implements Initializable, InterfaceController 
         if (StateMachine.state != StateMachine.Game) {
             return 1;
         }
-        return this.guessWordGameController.onExitGameButtonClick();
+        return this.guessWordGameController.onExitGame();
     }
 
     public void loadSeacherController() {
@@ -422,6 +422,21 @@ public class GeneralAppController implements Initializable, InterfaceController 
         if (this.confirmBeforeQuitGame() == 0) {
             return;
         }
+        StateMachine.setChooseGame();
+        this.ClearStatusButton();
+        this.gameTab.getStyleClass().add("active");
+        FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("ChooseGame.fxml"));
+        BorderPane newBorderPane;
+        try {
+            newBorderPane = loader.load();
+        } catch (IOException exception) {
+            throw new RuntimeException();
+        }
+        ChooseGameController chooseGameController = loader.getController();
+        chooseGameController.setGeneralAppController(this);
+        this.ChangeMainBorderPane(newBorderPane);
+    }
+    public void loadChooseGameWithoutCofirm(){
         StateMachine.setChooseGame();
         this.ClearStatusButton();
         this.gameTab.getStyleClass().add("active");
