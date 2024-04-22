@@ -262,16 +262,18 @@ public class GuessWordGameController implements Initializable {
         }
     }
 
-    public void onExitGameButtonClick() {
+    public int onExitGameButtonClick() {
         if(this.timer!=null){
             this.timer.cancel();
         }
         this.displayAlert("Confirm", "Are you want to quit ?");
         if(this.buttonYesStatus==1){
             this.generalAppController.loadChooseGame();
+            return 1;
         }
         else {
             this.continueTimer();
+            return 0;
         }
     }
 

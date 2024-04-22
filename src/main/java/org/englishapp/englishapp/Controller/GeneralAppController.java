@@ -114,6 +114,8 @@ public class GeneralAppController implements Initializable, InterfaceController 
 
     private AddController addController;
 
+    private GuessWordGameController guessWordGameController;
+
     public String searchedWord = "";
 
     @Override
@@ -143,7 +145,17 @@ public class GeneralAppController implements Initializable, InterfaceController 
         this.LeftPaneTransition.setToX(-250);
     }
 
+    public int confirmBeforeQuitGame() {
+        if (StateMachine.state != StateMachine.Game) {
+            return 1;
+        }
+        return this.guessWordGameController.onExitGameButtonClick();
+    }
+
     public void loadSeacherController() {
+        if (this.confirmBeforeQuitGame() == 0) {
+            return;
+        }
         StateMachine.setInitAndSeacrch();
         this.ClearStatusButton();
         this.searchTab.getStyleClass().add("active");
@@ -283,7 +295,7 @@ public class GeneralAppController implements Initializable, InterfaceController 
     }
 
     public void handleClickOnSave() {
-        System.out.printf("Value of searched word: %s\n",this.searchedWord);
+        System.out.printf("Value of searched word: %s\n", this.searchedWord);
         if (this.searchedWord == null) {
             return;
         }
@@ -301,6 +313,9 @@ public class GeneralAppController implements Initializable, InterfaceController 
     }
 
     public void loadGoogleTranslate() {
+        if (this.confirmBeforeQuitGame() == 0) {
+            return;
+        }
         StateMachine.setGoogleTranslate();
         this.ClearStatusButton();
         this.googleTranslateTab.getStyleClass().add("active");
@@ -373,6 +388,9 @@ public class GeneralAppController implements Initializable, InterfaceController 
     }
 
     public void loadAddToDict() {
+        if (this.confirmBeforeQuitGame() == 0) {
+            return;
+        }
         StateMachine.setAddNewWord();
         this.ClearStatusButton();
         this.addToDictTab.getStyleClass().add("active");
@@ -401,6 +419,9 @@ public class GeneralAppController implements Initializable, InterfaceController 
     }
 
     public void loadChooseGame() {
+        if (this.confirmBeforeQuitGame() == 0) {
+            return;
+        }
         StateMachine.setChooseGame();
         this.ClearStatusButton();
         this.gameTab.getStyleClass().add("active");
@@ -416,7 +437,7 @@ public class GeneralAppController implements Initializable, InterfaceController 
         this.ChangeMainBorderPane(newBorderPane);
     }
 
-    public void loadGuessWordGame(){
+    public void loadGuessWordGame() {
         StateMachine.setGame();
         FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("GuessWordGame.fxml"));
         BorderPane newBorderPane;
@@ -425,12 +446,12 @@ public class GeneralAppController implements Initializable, InterfaceController 
         } catch (IOException exception) {
             throw new RuntimeException();
         }
-        GuessWordGameController guessWordGameController = loader.getController();
-        guessWordGameController.setGeneralAppController(this);
+        this.guessWordGameController = loader.getController();
+        this.guessWordGameController.setGeneralAppController(this);
         this.ChangeMainBorderPane(newBorderPane);
     }
 
-    public void loadPlayAgain(int score){
+    public void loadPlayAgain(int score) {
         StateMachine.setPlayAgain();
         FXMLLoader loader = new FXMLLoader(HelloApplication.class.getResource("PlayAgain.fxml"));
         BorderPane newBorderPane;
@@ -445,6 +466,7 @@ public class GeneralAppController implements Initializable, InterfaceController 
         this.ChangeMainBorderPane(newBorderPane);
 
     }
+
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
