@@ -440,6 +440,7 @@ public class GeneralAppController implements Initializable, InterfaceController 
             throw new RuntimeException();
         }
         PlayAgainController playAgainController = loader.getController();
+        playAgainController.setGeneralAppController(this);
         playAgainController.setScore(score);
         this.ChangeMainBorderPane(newBorderPane);
 

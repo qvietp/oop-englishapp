@@ -11,6 +11,8 @@ public class PlayAgainController implements Initializable {
     private int score;
 
     public TextArea showResult;
+
+    private GeneralAppController generalAppController;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.score = 0;
@@ -19,17 +21,21 @@ public class PlayAgainController implements Initializable {
         }
     }
 
+    public void setGeneralAppController(GeneralAppController generalAppController){
+        this.generalAppController = generalAppController;
+    }
     public void setScore(int score) {
         this.score = score;
         int correctAnswer = (int)(score/10);
-        int inCorrectAnswere = 10 - correctAnswer;
+        int inCorrectAnswere = 11 - correctAnswer;
         this.showResult.setText(String.format("Your Score: %d\nCorrect Answer: %d\nInCorrect Answer: %d",score,correctAnswer,inCorrectAnswere));
     }
 
     public void onExitGameButtonClick(){
+        this.generalAppController.loadChooseGame();
     }
 
     public void clickPlayAgain(){
-
+        this.generalAppController.loadGuessWordGame();
     }
 }

@@ -1,13 +1,20 @@
 package org.englishapp.englishapp.Controller;
 
 import javafx.css.StyleableStringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.englishapp.englishapp.utils.MyTimerTask;
 
 import java.io.BufferedReader;
@@ -40,6 +47,9 @@ public class GuessWordGameController implements Initializable {
     private List<String> temptWordList;
 
     public TextField timeClock;
+
+    public int buttonNoStatus;
+    public int buttonYesStatus;
 
     private int indexCorrectQuestion = 0;
 
@@ -118,6 +128,19 @@ public class GuessWordGameController implements Initializable {
         fileReader.close();
     }
 
+    public void createTimer(){
+        if (this.timer == null) {
+            MyTimerTask myTimerTask = new MyTimerTask(this);
+            this.timer = new Timer("Timer");
+            this.timer.schedule(myTimerTask, 0, 1000);
+        }
+    }
+
+    public void continueTimer(){
+        this.timer = new Timer();
+        MyTimerTask myTimerTask = new MyTimerTask(this);
+        this.timer.schedule(myTimerTask,0,1000);
+    }
     private void loadNextQuestion() {
         if(this.numberOfQuestion > 10){
             this.generalAppController.loadPlayAgain(this.score);
@@ -126,14 +149,10 @@ public class GuessWordGameController implements Initializable {
             }
             return;
         }
+        this.createTimer();
         this.numberOfQuestion++;
         this.setCLock(0);
         this.timeCount = 0;
-        if (this.timer == null) {
-            MyTimerTask myTimerTask = new MyTimerTask(this);
-            this.timer = new Timer("Timer");
-            this.timer.schedule(myTimerTask, 0, 1000);
-        }
 
         int initialSize = this.wordList.size();
         int currentSize = this.temptWordList.size();
@@ -247,6 +266,48 @@ public class GuessWordGameController implements Initializable {
         if(this.timer!=null){
             this.timer.cancel();
         }
-        this.generalAppController.loadChooseGame();
+        this.displayAlert("Confirm", "Are you want to quit ?");
+        if(this.buttonYesStatus==1){
+            this.generalAppController.loadChooseGame();
+        }
+        else {
+            this.continueTimer();
+        }
+    }
+
+    public void displayAlert(String title, String message) {
+        buttonNoStatus = 0;
+        buttonYesStatus = 0;
+        Stage window = new Stage();
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle(title);
+        window.setMinWidth(250);
+        Label label = new Label();
+        label.setText(message);
+        Button buttonYes = new Button("Yes");
+        Button buttonNo = new Button("No");
+        buttonYes.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                buttonYesStatus = 1;
+                window.close();
+            }
+        });
+
+        buttonNo.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                buttonNoStatus = 1;
+                window.close();
+            }
+        });
+
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(label, buttonYes, buttonNo);
+        layout.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(layout);
+        window.setScene(scene);
+        window.showAndWait();
     }
 }
