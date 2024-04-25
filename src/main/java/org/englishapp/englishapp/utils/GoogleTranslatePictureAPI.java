@@ -10,8 +10,8 @@ import java.util.concurrent.TimeoutException;
 public class GoogleTranslatePictureAPI {
 
     public static void main(String[] args) throws IOException, TimeoutException {
-        File file = new File("file_to_pic");
-        processImage(file);
+        //File file = new File("file_to_pic");
+        //processImage(file);
     }
 
     private static void processImage(File file) throws IOException, TimeoutException {
